@@ -1,0 +1,87 @@
+{
+  "dataset_name": "dataset-20260223-120949",
+  "created_at": "2026-02-23T20:09:49.635Z",
+  "base_url": "https://agentrun.tscircuit.com",
+  "parameters": {
+    "parallel_agents": 4,
+    "samples": 10,
+    "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+    "model": "openai/gpt-5.2-codex"
+  },
+  "timeouts": {
+    "run_timeout_ms": 1200000,
+    "poll_interval_ms": 1500,
+    "no_log_progress_timeout_ms": 600000
+  },
+  "status": "running",
+  "sample_results": [
+    {
+      "sample_number": 4,
+      "sample_name": "sample004",
+      "status": "failed",
+      "duration_ms": 14316,
+      "agent_sandbox_id": "d679ddad52a7b666b0a847ec84e8d9838bdac0a5c72638bff1ae5167e49a900e",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 5,
+      "sample_name": "sample005",
+      "status": "failed",
+      "duration_ms": 14276,
+      "agent_sandbox_id": "a1c0aaae1da3a1f7ecc4d819bc54dc7258438af619060aa863b42966c56bdb55",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 6,
+      "sample_name": "sample006",
+      "status": "failed",
+      "duration_ms": 14342,
+      "agent_sandbox_id": "42df2fdc756cab2fdd1d745c00fe346ad192d2e8cfed387af84b2cf455559d1e",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 7,
+      "sample_name": "sample007",
+      "status": "failed",
+      "duration_ms": 14395,
+      "agent_sandbox_id": "ee04f3ca739a4adb44f7978a9217139849f93dd37e5cec44b317d7e9b944c339",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 8,
+      "sample_name": "sample008",
+      "status": "failed",
+      "duration_ms": 14340,
+      "agent_sandbox_id": "78639d0053d717bd0ac61e82142ac123687f037105fbf20632c5858eb061939c",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 9,
+      "sample_name": "sample009",
+      "status": "failed",
+      "duration_ms": 14376,
+      "agent_sandbox_id": "efa3edfd3cd4b0bed3af4ea5e1edd5e910bac4a21e7c1330d94b0da29d9925fe",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 10,
+      "sample_name": "sample010",
+      "status": "failed",
+      "duration_ms": 14367,
+      "agent_sandbox_id": "14d9bd6c544c86a4d87db52e75e1d47618343f8d32ab51b0145983d05d05aa4f",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    }
+  ],
+  "summary": {
+    "total_samples": 10,
+    "completed_samples": 0,
+    "failed_samples": 7
+  }
+}

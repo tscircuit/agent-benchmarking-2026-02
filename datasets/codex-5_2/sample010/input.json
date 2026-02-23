@@ -1,0 +1,7 @@
+{
+  "sample_number": 10,
+  "sample_name": "sample010",
+  "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+  "model": "openai/gpt-5.2-codex",
+  "base_url": "https://agentrun.tscircuit.com"
+}

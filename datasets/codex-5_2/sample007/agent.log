@@ -1,0 +1,10 @@
+[error] Sandbox run failed
+[stream-ended] The operation was aborted.
+[retry] attempt 2/3 for sample007
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed
+[retry] attempt 3/3 for sample007
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed

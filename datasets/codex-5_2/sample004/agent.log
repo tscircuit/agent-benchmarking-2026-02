@@ -1,0 +1,11 @@
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed
+[retry] attempt 2/3 for sample004
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed
+[retry] attempt 3/3 for sample004
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed

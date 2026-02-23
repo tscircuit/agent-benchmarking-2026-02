@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "agent_sandbox": {
+    "agent_sandbox_id": "d679ddad52a7b666b0a847ec84e8d9838bdac0a5c72638bff1ae5167e49a900e",
+    "status": "failed",
+    "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+    "model": "openrouter/openai/gpt-5.2-codex",
+    "agent": null,
+    "created_at": 1771877426483,
+    "started_at": 1771877426483,
+    "completed_at": 1771877439212,
+    "exit_code": null,
+    "stdout": null,
+    "stderr": null,
+    "output_file_paths": [],
+    "output_fs_map": {},
+    "logs": [
+      {
+        "msg": "[error] SandboxError: HTTP error! status: 500",
+        "stream": "stderr",
+        "timestamp": "2026-02-23T20:10:39.212Z"
+      }
+    ],
+    "total_log_count": 1,
+    "log_stream_url": "https://agentrun.tscircuit.com/agent_sandboxes/view_log_stream?agent_sandbox_id=d679ddad52a7b666b0a847ec84e8d9838bdac0a5c72638bff1ae5167e49a900e",
+    "pretty_log_stream_url": "https://agentrun.tscircuit.com/agent_sandboxes/view_pretty_log_stream?agent_sandbox_id=d679ddad52a7b666b0a847ec84e8d9838bdac0a5c72638bff1ae5167e49a900e"
+  }
+}
