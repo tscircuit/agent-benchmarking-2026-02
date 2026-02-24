@@ -1,0 +1,29 @@
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed
+[retry] attempt 2/3 for sample006
+[stderr] [error] SandboxError: HTTP error! status: 500
+[end] {"status":"failed","logs_count":1}
+[error] Sandbox run failed
+[retry] attempt 3/3 for sample006
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[poll-note] SSE idle, fetched 0 logs from poll endpoint
+[error] No log progress for 600s while status is running. Aborting run.

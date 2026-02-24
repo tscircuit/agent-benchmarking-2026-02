@@ -1,9 +1,0 @@
-[system] Connected to pretty log stream
-[system] Connected to pretty log stream
-[error] [error] SandboxError: HTTP error! status: 500
-[system] Run finished with status: failed
-[end] {"status":"failed","logs_count":1}
-[system] Connected to pretty log stream
-[error] [error] SandboxError: HTTP error! status: 500
-[system] Run finished with status: failed
-[end] {"status":"failed","logs_count":1}

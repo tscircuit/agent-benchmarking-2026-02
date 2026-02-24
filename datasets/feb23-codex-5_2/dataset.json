@@ -1,0 +1,105 @@
+{
+  "dataset_name": "feb23-codex-5_2",
+  "created_at": "2026-02-23T21:19:47.039Z",
+  "base_url": "https://agentrun.tscircuit.com",
+  "parameters": {
+    "parallel_agents": 4,
+    "samples": 10,
+    "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+    "model": "openai/gpt-5.2-codex"
+  },
+  "timeouts": {
+    "run_timeout_ms": 1200000,
+    "poll_interval_ms": 1500,
+    "no_log_progress_timeout_ms": 600000
+  },
+  "status": "completed",
+  "sample_results": [
+    {
+      "sample_number": 1,
+      "sample_name": "sample001",
+      "status": "completed",
+      "duration_ms": 99017,
+      "agent_sandbox_id": "1b3d8bac6cfaeddcc3e830efca931e04147f6612b98dc00684baa1c78eee2229",
+      "attempts": 1
+    },
+    {
+      "sample_number": 2,
+      "sample_name": "sample002",
+      "status": "completed",
+      "duration_ms": 416646,
+      "agent_sandbox_id": "99acc922750ed15a35c9f0eab8e832affefc929e0f647faefd3cfa26a2e7e1be",
+      "attempts": 1
+    },
+    {
+      "sample_number": 3,
+      "sample_name": "sample003",
+      "status": "completed",
+      "duration_ms": 236488,
+      "agent_sandbox_id": "2e76693c5cc1b47f52a4723fec962d951bc3e52f5c19c5fb808bcdcb2c936af7",
+      "attempts": 1
+    },
+    {
+      "sample_number": 4,
+      "sample_name": "sample004",
+      "status": "completed",
+      "duration_ms": 317839,
+      "agent_sandbox_id": "9f284b20a3df40c2c923c3c3235f9224c0f360900a9954472538e1736a66f5da",
+      "attempts": 1
+    },
+    {
+      "sample_number": 5,
+      "sample_name": "sample005",
+      "status": "completed",
+      "duration_ms": 259796,
+      "agent_sandbox_id": "125f26db6ea6268e6d7dd22372095ff4aba8c1cd48356abaf646829108fd94ee",
+      "attempts": 1
+    },
+    {
+      "sample_number": 6,
+      "sample_name": "sample006",
+      "status": "completed",
+      "duration_ms": 312365,
+      "agent_sandbox_id": "e18e659514ce2f9125f3ee0a8667de21d69d351f379c633016112dcf6e1f5dd2",
+      "attempts": 1
+    },
+    {
+      "sample_number": 7,
+      "sample_name": "sample007",
+      "status": "completed",
+      "duration_ms": 308219,
+      "agent_sandbox_id": "651ffde5b6ae6112b3fa12199c9535359449914b8ed3ed914e11d813c5d65e39",
+      "attempts": 1
+    },
+    {
+      "sample_number": 8,
+      "sample_name": "sample008",
+      "status": "completed",
+      "duration_ms": 302005,
+      "agent_sandbox_id": "497335a7a190cfc3b19cacf1d6570d1a817b63dc5690cfaadaecf1e9bd8b3a56",
+      "attempts": 2
+    },
+    {
+      "sample_number": 9,
+      "sample_name": "sample009",
+      "status": "completed",
+      "duration_ms": 247954,
+      "agent_sandbox_id": "e91f8a00296ef12fa76ac4484374090a7f98046af493764487cdca3820757382",
+      "attempts": 1
+    },
+    {
+      "sample_number": 10,
+      "sample_name": "sample010",
+      "status": "completed",
+      "duration_ms": 328876,
+      "agent_sandbox_id": "b68e61ba4d4338b0cb92bdee8436c3a267e332c92383f7e429e1a71185ba69bd",
+      "attempts": 1
+    }
+  ],
+  "completed_at": "2026-02-23T21:47:38.511Z",
+  "summary": {
+    "total_samples": 10,
+    "completed_samples": 10,
+    "failed_samples": 0
+  }
+}

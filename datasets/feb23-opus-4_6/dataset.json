@@ -1,0 +1,110 @@
+{
+  "dataset_name": "dataset-20260223-123107",
+  "created_at": "2026-02-23T20:31:07.689Z",
+  "base_url": "https://agentrun.tscircuit.com",
+  "parameters": {
+    "parallel_agents": 4,
+    "samples": 10,
+    "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+    "model": "anthropic/claude-opus-4.6"
+  },
+  "timeouts": {
+    "run_timeout_ms": 1200000,
+    "poll_interval_ms": 1500,
+    "no_log_progress_timeout_ms": 600000
+  },
+  "status": "completed_with_failures",
+  "sample_results": [
+    {
+      "sample_number": 1,
+      "sample_name": "sample001",
+      "status": "failed",
+      "duration_ms": 658039,
+      "agent_sandbox_id": "fe46a6f72a2f1c51cd7fe0a80b83b4acbdb776a5e25ba204a98edb494e784aeb",
+      "attempts": 3,
+      "error": "No log progress for 600s while status is running. Aborting run."
+    },
+    {
+      "sample_number": 2,
+      "sample_name": "sample002",
+      "status": "failed",
+      "duration_ms": 14360,
+      "agent_sandbox_id": "5c1db2d8feb54e2a296f24df66b71fcc7424ff8c8681bdc3a24b4a9067cf2ed7",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 3,
+      "sample_name": "sample003",
+      "status": "completed",
+      "duration_ms": 370832,
+      "agent_sandbox_id": "8a575386ac89333fb291edf6800ca82e98730d6825ac6908c87228e5bbb49dbd",
+      "attempts": 2
+    },
+    {
+      "sample_number": 4,
+      "sample_name": "sample004",
+      "status": "completed",
+      "duration_ms": 404896,
+      "agent_sandbox_id": "73310a8c640d2a89b63edb33df96dd13c7c5c2d0596b3d4e29b95b3a7e297720",
+      "attempts": 2
+    },
+    {
+      "sample_number": 5,
+      "sample_name": "sample005",
+      "status": "failed",
+      "duration_ms": 14318,
+      "agent_sandbox_id": "8d78d7eb69df976a5b65e3c4febbfbcc4dbe4a9e0ab147def48e00cb7f7500cb",
+      "attempts": 3,
+      "error": "Sandbox run failed"
+    },
+    {
+      "sample_number": 6,
+      "sample_name": "sample006",
+      "status": "failed",
+      "duration_ms": 600800,
+      "agent_sandbox_id": "1d90b5d3d843ed2aaa6848eb6209e1ecfd3044688e421cc431c7cf1dbdc50579",
+      "attempts": 3,
+      "error": "No log progress for 600s while status is running. Aborting run."
+    },
+    {
+      "sample_number": 7,
+      "sample_name": "sample007",
+      "status": "completed",
+      "duration_ms": 177906,
+      "agent_sandbox_id": "301d903c3aa07de29c4e58df3e7d5d40dc56929c7d53a04a3f0f5c2f50311009",
+      "attempts": 1
+    },
+    {
+      "sample_number": 8,
+      "sample_name": "sample008",
+      "status": "completed",
+      "duration_ms": 185076,
+      "agent_sandbox_id": "234c4fbc349dc3abc88023b513bfc4d33318afa573edc45212404550b8992e7f",
+      "attempts": 1
+    },
+    {
+      "sample_number": 9,
+      "sample_name": "sample009",
+      "status": "failed",
+      "duration_ms": 1026235,
+      "agent_sandbox_id": "3116cf1fcad7ebec5522482de67825fb0119f853c3d9159604579ddc850003cb",
+      "attempts": 3,
+      "error": "No log progress for 600s while status is running. Aborting run."
+    },
+    {
+      "sample_number": 10,
+      "sample_name": "sample010",
+      "status": "completed",
+      "duration_ms": 242946,
+      "agent_sandbox_id": "6dc8f8f93f3ca29800c208d5cdb8050774e99672f9a4dccb5f365def114ea3ad",
+      "attempts": 3
+    }
+  ],
+  "completed_at": "2026-02-23T21:32:25.454Z",
+  "summary": {
+    "total_samples": 10,
+    "completed_samples": 5,
+    "failed_samples": 5
+  }
+}

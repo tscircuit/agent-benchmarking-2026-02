@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "agent_sandbox": {
+    "agent_sandbox_id": "8d78d7eb69df976a5b65e3c4febbfbcc4dbe4a9e0ab147def48e00cb7f7500cb",
+    "status": "failed",
+    "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+    "model": "openrouter/anthropic/claude-opus-4.6",
+    "agent": null,
+    "created_at": 1771878755428,
+    "started_at": 1771878755428,
+    "completed_at": 1771878768079,
+    "exit_code": null,
+    "stdout": null,
+    "stderr": null,
+    "output_file_paths": [],
+    "output_fs_map": {},
+    "logs": [
+      {
+        "msg": "[error] SandboxError: HTTP error! status: 500",
+        "stream": "stderr",
+        "timestamp": "2026-02-23T20:32:48.079Z"
+      }
+    ],
+    "total_log_count": 1,
+    "log_stream_url": "https://agentrun.tscircuit.com/agent_sandboxes/view_log_stream?agent_sandbox_id=8d78d7eb69df976a5b65e3c4febbfbcc4dbe4a9e0ab147def48e00cb7f7500cb",
+    "pretty_log_stream_url": "https://agentrun.tscircuit.com/agent_sandboxes/view_pretty_log_stream?agent_sandbox_id=8d78d7eb69df976a5b65e3c4febbfbcc4dbe4a9e0ab147def48e00cb7f7500cb"
+  }
+}

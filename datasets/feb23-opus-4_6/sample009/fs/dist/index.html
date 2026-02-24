@@ -1,0 +1,21 @@
+<html>
+    <head>
+      <link rel="icon" type="image/png" href="https://github.com/tscircuit.png">
+      <meta charset="UTF-8" />
+      <title>tscircuit</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+      <script>
+        window.TSCIRCUIT_USE_RUNFRAME_FOR_CLI = false;
+        window.TSCIRCUIT_RUNFRAME_STATIC_FILE_LIST = [{"filePath":"index.circuit.tsx","fileStaticAssetUrl":"./index/circuit.json"},{"filePath":"rp2040-breakout/index.circuit.tsx","fileStaticAssetUrl":"./rp2040-breakout/index/circuit.json"}];
+        window.TSCIRCUIT_PACKAGE_NAME = "workspace";
+      </script>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <div id="root">loading...</div>
+      <script>
+      globalThis.process = { env: { NODE_ENV: "production" } }
+      </script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/tscircuit@0.0.1363/dist/browser.min.js"></script>
+    </body>
+  </html>

@@ -1,0 +1,7 @@
+{
+  "sample_number": 1,
+  "sample_name": "sample001",
+  "prompt": "create a minimal RP2040 breakout board with a usb port and LED, disable the autorouting with routingDisabled, do not use components from the tscircuit registry",
+  "model": "anthropic/claude-opus-4.6",
+  "base_url": "https://agentrun.tscircuit.com"
+}
