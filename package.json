@@ -1,0 +1,10 @@
+{
+  "name": "@tsci/seveibar.agent-benchmarking-2026-02",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
