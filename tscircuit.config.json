@@ -1,3 +1,4 @@
 {
-  "includeBoardFiles": ["**/**/*.circuit.json", "**/circuit.json"]
+  "includeBoardFiles": ["**/**/*.circuit.json", "**/circuit.json", "**/**/*.tsx", "**/**/*.ts"],
+  "alwaysUseLatestTscircuitOnCloud": true
 }

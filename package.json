@@ -1,8 +1,15 @@
 {
   "name": "@tsci/seveibar.agent-benchmarking-2026-02",
   "type": "module",
+  "scripts": {
+    "dev": "tsci dev",
+    "build": "tsci build",
+    "start": "tsci dev"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "tscircuit": "^0.0.1399",
+    "@types/react": "^19.2.14"
   },
   "peerDependencies": {
     "typescript": "^5"
