@@ -8,3 +8,6 @@ create a minimal RP2040 breakout board with a usb port and LED,
 disable the autorouting with routingDisabled,
 do not use components from the tscircuit registry
 ```
+
+
+[tscircuit skill](https://github.com/tscircuit/skill)
