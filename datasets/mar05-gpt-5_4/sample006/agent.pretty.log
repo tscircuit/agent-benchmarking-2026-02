@@ -1,0 +1,84 @@
+[system] Connected to pretty log stream
+[system] [agent] running opencode
+[system] Performing one time database migration, may take a few minutes...
+[system] sqlite-migration:done
+[system] Database migration complete.
+[tool] Tool skill [completed] {"name":"tscircuit"}
+[tool] Tool output (skill): <skill_content name="tscircuit"> # Skill: tscircuit # tscircuit You are helping the user design electronics using tscircuit (React/TypeScript) and the `tsci` CLI. When this Skill …
+[tool] Tool glob [completed] pattern="*"
+[tool] Tool output (glob): /workspace/package.json /workspace/.gitignore /workspace/opencode.json /workspace/node_modules/zod/package.json /workspace/node_modules/zod/index.d.cts /workspace/node_modules/zod… [truncated]
+[tool] Tool read [completed] file=/workspace/.claude/skills/tscircuit/SYNTAX.md offset=1
+[tool] Tool output (read): <path>/workspace/.claude/skills/tscircuit/SYNTAX.md</path> <type>file</type> <content>1: # tscircuit syntax primer 2: 3: ## 1) Root element 4: 5: A circuit is typically a default …
+[tool] Tool read [completed] file=/workspace/.claude/skills/tscircuit/CLI.md offset=1
+[tool] Tool output (read): <path>/workspace/.claude/skills/tscircuit/CLI.md</path> <type>file</type> <content>1: # tsci CLI primer 2: 3: Prereqs 4: - Node.js or Bun 5: - Install the tscircuit CLI (global in…
+[tool] Tool bash [completed] command="tsci --help" workdir=/workspace
+[tool] Tool output (bash): Usage: tsci [options] [command] CLI for developing tscircuit packages Options: -h, --help display help for command Commands: init [options] [directory] Initialize a new TSCircuit …
+[tool] Tool read [completed] file=/workspace/package.json offset=1
+[tool] Tool output (read): <path>/workspace/package.json</path> <type>file</type> <content>1: { 2: "name": "workspace", 3: "version": "1.0.0", 4: "description": "A tscircuit component package", 5: "main": "…
+[tool] Tool read [completed] file=/workspace/.gitignore offset=1
+[tool] Tool output (read): <path>/workspace/.gitignore</path> <type>file</type> <content>1: # Dependencies 2: node_modules/ 3: 4: # Build output 5: dist/ 6: build/ 7: 8: # Environment variables 9: .env 10: …
+[tool] Tool bash [completed] command="tsci search --jlcpcb "RP2040"" workdir=/workspace
+[tool] Tool output (bash): Found 2 component(s) in JLC search: 1. RP2040 (C2040) - (stock: 42,449) 2. RP2040-Zero (C5350143) - (stock: 51)
+[tool] Tool bash [completed] command="tsci search --jlcpcb "LED 0603 green"" workdir=/workspace
+[tool] Tool output (bash): Found 10 component(s) in JLC search: 1. XL-1608SYGC-06 (C965805) - (stock: 796,384) 2. XL-1608PGC-06 (C7371905) - (stock: 493,614) 3. LTST-C191KGKT (C125098) - (stock: 184,257) 4.…
+[tool] Tool bash [completed] command="tsci search --jlcpcb "USB Type-C 16P"" workdir=/workspace
+[tool] Tool output (bash): Found 10 component(s) in JLC search: 1. TYPE-C 16PIN 2MD(073) (C2765186) - (stock: 735,053) 2. KH-TYPE-C-16P (C709357) - (stock: 104,835) 3. TYPE-C 16P CB1.6 073 (C2906290) - (sto…
+[tool] Tool bash [completed] command="tsci search --jlcpcb "Resistor 0603 1k"" workdir=/workspace
+[tool] Tool output (bash): Found 10 component(s) in JLC search: 1. 0603WAF1001T5E (C21190) - (stock: 15,873,089) 2. FRC0603F1001TS (C2907002) - (stock: 9,337,586) 3. FRC0603J102 TS (C2907113) - (stock: 7,74…
+[tool] Tool bash [completed] command="tsci search --jlcpcb "Capacitor 0603 100nF"" workdir=/workspace
+[tool] Tool output (bash): Found 10 component(s) in JLC search: 1. CC0603KRX7R9BB104 (C14663) - (stock: 81,299,425) 2. CL10B104KB8NNNC (C1591) - (stock: 45,893,814) 3. TCC0603X7R104K500CT (C282519) - (stock…
+[tool] Tool bash [completed] command="tsci search --jlcpcb "Capacitor 0603 1uF"" workdir=/workspace
+[tool] Tool output (bash): Found 10 component(s) in JLC search: 1. CL10A105KB8NNNC (C15849) - (stock: 11,240,988) 2. CGA0603X5R105K500JT (C6119852) - (stock: 11,063,224) 3. CL10B105KA8NNNC (C29936) - (stock…
+[tool] Tool grep [completed] pattern="routingDisabled" include=**/*.{ts,tsx,js,d.ts}
+[tool] Tool output (grep): Found 10 matches /workspace/node_modules/tscircuit/dist/webworker.min.js: Line 352: `),{solved:!1,connectionName:connection.name}}createObstacleList({dominantLayer,connection,obst…
+[tool] Tool grep [completed] pattern="usb.*c|type.?c|usb.?type.?c" include=**/*.{ts,tsx,js,d.ts}
+[tool] Tool output (grep): Found 73 matches /workspace/node_modules/tscircuit/dist/webworker.min.js: Line 1: var __create=Object.create;var __defProp=Object.defineProperty;var __getOwnPropDesc=Object.getOwn…
+[tool] Tool grep [completed] pattern="pinLabels.*USB|D\+|D-" include=**/*.{ts,tsx,js,d.ts}
+[tool] Tool output (grep): Found 61 matches /workspace/node_modules/tscircuit/dist/webworker.min.js: Line 587: `)})}}}return e4}function Oh2(t21,e4,n3){let s2=0,o3=n3?.NODE_MAX_PF??.99999;for(let n4 of t21)…
+[tool] Tool bash [completed] command="tsci import --help" workdir=/workspace
+[tool] Tool output (bash): Usage: tsci import [options] <query> Search JLCPCB or the tscircuit registry and import a component Arguments: query Chip name, part number, or package name Options: --jlcpcb Sear…
+[tool] Tool bash [completed] command="tsci import --jlcpcb "C2040"" workdir=/workspace
+[tool] Tool output (bash): - Searching... - Importing "C2040" from JLCPCB... ✔ Imported /workspace/imports/RP2040.tsx
+[tool] Tool bash [completed] command="tsci import --jlcpcb "C125093"" workdir=/workspace
+[tool] Tool output (bash): - Searching... - Importing "C125093" from JLCPCB... ✔ Imported /workspace/imports/LTST_C190GKT.tsx
+[tool] Tool bash [completed] command="tsci import --jlcpcb "C21190"" workdir=/workspace
+[tool] Tool output (bash): - Searching... - Importing "C21190" from JLCPCB... ✔ Imported /workspace/imports/A_0603WAF1001T5E.tsx
+[tool] Tool bash [completed] command="tsci import --jlcpcb "C14663"" workdir=/workspace
+[tool] Tool output (bash): - Searching... - Importing "C14663" from JLCPCB... ✔ Imported /workspace/imports/CC0603KRX7R9BB104.tsx
+[tool] Tool bash [completed] command="tsci import --jlcpcb "C709357"" workdir=/workspace
+[tool] Tool output (bash): - Searching... - Importing "C709357" from JLCPCB... ✔ Imported /workspace/imports/KH_TYPE_C_16P.tsx
+[tool] Tool bash [completed] command="tsci import --jlcpcb "C15849"" workdir=/workspace
+[tool] Tool output (bash): - Searching... - Importing "C15849" from JLCPCB... ✔ Imported /workspace/imports/CL10A105KB8NNNC.tsx
+[tool] Tool read [completed] file=/workspace/imports/RP2040.tsx offset=1
+[tool] Tool output (read): <path>/workspace/imports/RP2040.tsx</path> <type>file</type> <content>1: import type { ChipProps } from "@tscircuit/props" 2: 3: const pinLabels = { 4: pin1: ["IOVDD6"], 5: pin2: …
+[tool] Tool read [completed] file=/workspace/imports/KH_TYPE_C_16P.tsx offset=1
+[tool] Tool output (read): <path>/workspace/imports/KH_TYPE_C_16P.tsx</path> <type>file</type> <content>1: import type { ChipProps } from "@tscircuit/props" 2: 3: const pinLabels = { 4: pin1: ["EP4"], 5: pi…
+[tool] Tool read [completed] file=/workspace/imports/LTST_C190GKT.tsx offset=1
+[tool] Tool output (read): <path>/workspace/imports/LTST_C190GKT.tsx</path> <type>file</type> <content>1: import type { ChipProps } from "@tscircuit/props" 2: 3: const pinLabels = { 4: pin1: ["_NEG"], 5: pi…
+[tool] Tool read [completed] file=/workspace/imports/CL10A105KB8NNNC.tsx offset=1
+[tool] Tool output (read): <path>/workspace/imports/CL10A105KB8NNNC.tsx</path> <type>file</type> <content>1: import type { ChipProps } from "@tscircuit/props" 2: 3: const pinLabels = { 4: pin1: ["pin1"], 5:…
+[tool] Tool read [completed] file=/workspace/imports/CC0603KRX7R9BB104.tsx offset=1
+[tool] Tool output (read): <path>/workspace/imports/CC0603KRX7R9BB104.tsx</path> <type>file</type> <content>1: import type { ChipProps } from "@tscircuit/props" 2: 3: const pinLabels = { 4: pin1: ["pin1"], …
+[tool] Tool read [completed] file=/workspace/imports/A_0603WAF1001T5E.tsx offset=1
+[tool] Tool output (read): <path>/workspace/imports/A_0603WAF1001T5E.tsx</path> <type>file</type> <content>1: import type { ChipProps } from "@tscircuit/props" 2: 3: const pinLabels = { 4: pin1: ["pin1"], 5…
+[tool] Tool apply_patch [completed] {"patchText":"*** Begin Patch\n*** Add File: /workspace/index.tsx\n+import React from \"react\"\n+import { board, group, silkscreentext, tr…
+[tool] Tool output (apply_patch): Success. Updated the following files: A workspace/index.tsx
+[tool] Tool bash [completed] command="tsci build --site --use-cdn-javascript" workdir=/workspace
+[tool] Tool output (bash): Building 1 file(s)... Building index.circuit.tsx... Generating circuit JSON... Circuit JSON written to dist/index/circuit.json Port pin2 on R1 is missing a trace Port pin2 on R1 i…
+[tool] Tool bash [completed] command="tsci snapshot" workdir=/workspace
+[tool] Tool output (bash): ✅ __snapshots__/index.circuit-pcb.snap.svg ✅ __snapshots__/index.circuit-schematic.snap.svg All snapshots match
+[assistant] Built a minimal RP2040 breakout in `index.tsx` using only locally imported JLCPCB parts from `imports/RP2040.tsx`, `imports/KH_TYPE_C_16P.tsx`, `imports/LTST_C190GKT.tsx`, `imports/A_0603WAF1001T5E.tsx`, `imports/CC0603KRX7R9BB104.tsx`, and `imports/CL10A105KB8NNNC.tsx`.
+
+- The board uses `routingDisabled` and also sets `autorouter="disabled"` on the root board in `index.tsx:12`.
+- The circuit includes a USB-C receptacle, RP2040, a GPIO25-driven LED with 1k resistor, and basic decoupling plus bulk caps in `index.tsx:17`.
+- I assumed a minimal power scheme with `VBUS -> VREG_IN`, `VREG_VOUT -> V3V3`, all I/O rails tied to `V3V3`, both DVDD rails tied to `V1V1`, `RUN` pulled high directly, and `TESTEN` tied low in `index.tsx:67`.
+- USB data lines are connected from the USB-C connector to the RP2040 USB pins, shell and ground pins are tied to `GND`, and CC/SBU pins are exposed as named nets without extra circuitry in `index.tsx:49`.
+- I ran `tsci build --site --use-cdn-javascript`, which generated output in `dist/`, and `tsci snapshot`, which generated snapshot artifacts in `__snapshots__/`.
+
+Build notes:
+- `tsci build --site --use-cdn-javascript` completed successfully and wrote `dist/index/circuit.json`.
+- The build reported a few trace warnings for `R1.pin2` and `C1.pin2`, even though those nets are declared in `index.tsx`; the board still built successfully.
+- Snapshot artifacts are available at `__snapshots__/index.circuit-pcb.snap.svg` and `__snapshots__/index.circuit-schematic.snap.svg`.
+[system] [agent] finished with exit code 0
+[system] Run finished with status: completed
+[end] {"status":"completed","logs_count":186}
