@@ -1,0 +1,385 @@
+[system] turn started
+[system] turn started
+[assistant] (streaming...)
+[assistant] I’m going to inspect the workspace to find the existing `tscircuit` project structure, then I’ll add a minimal RP2040 breakout with USB and an LED using imported/JLCPCB parts only.
+[tool] cmd: /bin/bash -lc "pwd && rg --files /workspace | sed 's#"'^/workspace/##'"' | head -200"
+[tool] exit=0 output: /workspace
+
+[tool] cmd: /bin/bash -lc "sed -n '1,220p' /root/.agents/skills/tscircuit/SKILL.md"
+[tool] exit=0 output: ---
+name: tscircuit
+description: Build, modify, and debug tscircuit (React/TypeScript) PCB designs. Use when working with tsci CLI (init/dev/search/add/import/build/export/snapshot/push), choosing foo
+[assistant] (streaming...)
+[assistant] The workspace is effectively empty, so I’m checking whether `tsci` is installed and then I’ll bootstrap a minimal tscircuit project before adding the board design.
+[tool] cmd: /bin/bash -lc 'ls -la /workspace'
+[tool] exit=0 output: total 4
+drwxr-xr-x 2 root root   64 Mar 26 14:55 .
+drwxr-xr-x 1 root root 4096 Mar 26 14:57 ..
+
+[tool] cmd: /bin/bash -lc 'node -v && npm -v'
+[tool] exit=0 output: v20.20.2
+10.8.2
+
+[tool] cmd: /bin/bash -lc 'tsci --help'
+[tool] exit=0 output: Usage: tsci [options] [command]
+
+CLI for developing tscircuit packages
+
+Options:
+  -h, --help                   display help for command
+
+Commands:
+  init [options] [directory]   Initialize a new TSCi
+[assistant] (streaming...)
+[assistant] I’ve confirmed the toolchain is present. Next I’m checking the exact `tsci init` and `tsci import` interfaces so I can scaffold the project and pull JLCPCB parts without relying on registry components.
+[tool] cmd: /bin/bash -lc 'tsci init --help'
+[tool] cmd: /bin/bash -lc 'tsci search rp2040'
+[tool] cmd: /bin/bash -lc 'tsci import --help'
+[tool] exit=0 output: Usage: tsci init [options] [directory]
+
+Initialize a new TSCircuit project in the specified directory (or current
+directory if none is provided)
+
+Arguments:
+  directory     Directory name (optional, d
+[tool] exit=0 output: Usage: tsci import [options] <query...>
+
+Search JLCPCB or the tscircuit registry and import a component
+
+Arguments:
+  query        Chip name, part number, or package name
+
+Options:
+  --jlcpcb     Sear
+[tool] exit=0 output: 
+Found 2 component(s) in JLC search:
+1. RP2040 (C2040) -  (stock: 42,449)
+2. RP2040-Zero (C5350143) -  (stock: 51)
+
+
+
+[assistant] (streaming...)
+[assistant] I’m pulling part metadata now. If `tsci search` stalls, I’ll query specific JLCPCB imports directly instead of browsing the generic search index.
+[assistant] (streaming...)
+[assistant] The generic search is working. I’m creating the project now, then I’ll import the RP2040, USB connector, flash, regulator, crystal, and passives needed for an actually bootable minimal breakout.
+[tool] cmd: /bin/bash -lc 'tsci init -y .'
+[assistant] (streaming...)
+[assistant] Project scaffolding is in place. Dependency installation is taking longer than expected, so I’m inspecting the generated files in parallel and will proceed as long as the package skeleton is valid.
+[tool] cmd: /bin/bash -lc "ls -la /workspace && printf '\\n---\\n' && sed -n '1,220p' /workspace/package.json && printf '\\n---\\n' && sed -n '1,220p' /workspace/index.circuit.tsx"
+[tool] exit=0 output: total 28
+drwxr-xr-x 9 root root  288 Mar 26 14:57 .
+drwxr-xr-x 1 root root 4096 Mar 26 14:57 ..
+drwxr-xr-x 3 root root   96 Mar 26 14:57 .claude
+-rw-r--r-- 1 root root  277 Mar 26 14:57 .gitignore
+-rw
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb RP2040'
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb USB-C-16P'
+[tool] exit=0 output: - Searching...
+- Importing "C41427498" from JLCPCB...
+✔ Imported /workspace/imports/HX_USB3_1TYPE_C_16P_FS.tsx
+
+[tool] exit=0 output: - Searching...
+- Importing "C2040" from JLCPCB...
+✔ Imported /workspace/imports/RP2040.tsx
+
+[tool] exit=0 output: Created: index.circuit.tsx
+Created tscircuit.config.json with schema
+Created: .npmrc
+Generating package.json
+Created: package.json
+Created: tsconfig.json
+Created: .gitignore
+Setting up tscircuit AI sk
+[assistant] (streaming...)
+[assistant] I have the project bootstrapped and confirmed JLC imports work. I’m now pulling the exact support parts and inspecting their generated pin interfaces before I write the board file.
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb W25Q16JVUXIQ'
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb LED 0603 green'
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb AMS1117-3.3'
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb 12MHz crystal 3225'
+[tool] exit=0 output: - Searching...
+No results found for "12MHz crystal 3225" in the tscircuit registry or JLCPCB.
+
+[tool] exit=0 output: - Searching...
+- Importing "C2843335" from JLCPCB...
+✔ Imported /workspace/imports/W25Q16JVUXIQ.tsx
+
+[tool] exit=0 output: - Searching...
+- Importing "C347222" from JLCPCB...
+✔ Imported /workspace/imports/AMS1117_3_3.tsx
+
+[tool] exit=0 output: - Searching...
+- Importing "C965805" from JLCPCB...
+✔ Imported /workspace/imports/XL_1608SYGC_06.tsx
+
+[assistant] (streaming...)
+[assistant] I’ve got the MCU, USB-C connector, flash, and LED imported. The crystal query was too specific, so I’m broadening that search and verifying the regulator choice before I write the netlist and placement.
+[tool] cmd: /bin/bash -lc "sed -n '1,240p' /workspace/imports/RP2040.tsx && printf '\\n---\\n' && sed -n '1,240p' /workspace/imports/W25Q16JVUXIQ.tsx && printf '\\n---\\n' && sed -n '1,240p' /workspace/imports/HX_USB3_1TYPE_C_16P_FS.tsx && printf '\\n---\\n' && sed -n '1,220p' /workspace/imports/XL_1608SYGC_06.tsx"
+[tool] exit=0 output: import type { ChipProps } from "@tscircuit/props"
+
+const pinLabels = {
+  pin1: ["IOVDD6"],
+  pin2: ["GPIO0"],
+  pin3: ["GPIO1"],
+  pin4: ["GPIO2"],
+  pin5: ["GPIO3"],
+  pin6: ["GPIO4"],
+  pin7: ["GPIO
+[tool] cmd: /bin/bash -lc 'tsci search 12MHz crystal'
+[tool] cmd: /bin/bash -lc 'tsci search LDO 3.3V SOT-223'
+[tool] exit=0 output: 
+Found 10 component(s) in JLC search:
+1. X322512MSB4SI (C9002) -  (stock: 405,502)
+2. XL2EL89CSI-111YLC-12M (C5280576) -  (stock: 114,585)
+3. TAXM12M4RLBDDT2T (C133334) -  (stock: 110,917)
+4. TXM27.12
+[assistant] (streaming...)
+[tool] exit=0 output: No results found for "LDO 3.3V SOT-223" in JLCPCB.
+
+[assistant] I’m at the point where implementation choices matter: I need the exact JLC pin labels and a clean way to expose GPIOs as breakout holes without pulling in packaged headers. I’m checking both before I edit the circuit file.
+[tool] cmd: /bin/bash -lc 'grep -n "const pinLabels" -A120 /workspace/imports/HX_USB3_1TYPE_C_16P_FS.tsx'
+[tool] cmd: /bin/bash -lc 'grep -n "const pinLabels" -A80 /workspace/imports/W25Q16JVUXIQ.tsx'
+[tool] exit=0 output: 3:const pinLabels = {
+4-  pin1: ["CS"],
+5-  pin2: ["pin2"],
+6-  pin3: ["pin3"],
+7-  pin4: ["GND"],
+8-  pin5: ["pin5"],
+9-  pin6: ["CLK"],
+10-  pin7: ["pin7"],
+11-  pin8: ["VCC"],
+12-  pin9: ["EP"]
+13-
+[tool] exit=0 output: 3:const pinLabels = {
+4-  pin13: ["EH4"],
+5-  pin14: ["EH2"],
+6-  pin15: ["EH1"],
+7-  pin16: ["EH3"],
+8-  pin17: ["A1B12"],
+9-  pin18: ["A4B9"],
+10-  pin19: ["B1A12"],
+11-  pin20: ["B4A9"],
+12-  pin21
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb X322512MSB4SI'
+[tool] cmd: /bin/bash -lc 'rg -n "<platedhole|<pinheader|<via" /workspace/node_modules/tscircuit /workspace/node_modules/@tscircuit | head -100'
+[tool] exit=0 output:  of this.input.inputMeshNodes)t21.rects.push({center:e4.center,width:e4.width,height:e4.height,stroke:"rgba(0, 0, 0, 0.1)",layer:`z${e4.availableZ.join(",")}`,label:[`node ${e4.capacityMeshNodeId}`,`z
+[tool] exit=0 output: - Searching...
+- Importing "C9002" from JLCPCB...
+✔ Imported /workspace/imports/X322512MSB4SI.tsx
+
+[tool] cmd: /bin/bash -lc "sed -n '1200,1365p' /workspace/node_modules/@tscircuit/props/README.md"
+[tool] exit=0 output: ```ts
+export type PcbTraceProps = z.input<typeof pcbTraceProps>;
+```
+
+[Source](https://github.com/tscircuit/props/blob/main/lib/components/pcb-trace.ts)
+
+### PinHeaderProps `<pinheader />`
+
+```ts
+expo
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb 100nF 0402 && tsci import --jlcpcb 1uF 0402 && tsci import --jlcpcb 27pF 0402 && tsci import --jlcpcb 27ohm 0402 && tsci import --jlcpcb 5.1k 0402 && tsci import --jlcpcb 10k 0402'
+[assistant] (streaming...)
+[assistant] The support-passive import batch is still running. While that finishes, I’m checking how `pinheader` and imported crystals are represented so the breakout pins and oscillator land cleanly in one pass.
+[tool] cmd: /bin/bash -lc "sed -n '1,220p' /workspace/imports/X322512MSB4SI.tsx"
+[tool] exit=0 output: import type { ChipProps } from "@tscircuit/props"
+
+const pinLabels = {
+  pin1: ["OSC1"],
+  pin2: ["GND1"],
+  pin3: ["OSC2"],
+  pin4: ["GND2"]
+} as const
+
+export const X322512MSB4SI = (props: ChipProps
+[tool] cmd: /bin/bash -lc "rg -n \"<pinheader\" /workspace/node_modules /workspace -g '"'!**/dist/**'"' | head -40"
+[tool] exit=0 output: /workspace/node_modules/@tscircuit/props/README.md:74:| `<pinheader />`                | [`PinHeaderProps`](#pinheaderprops-pinheader)                                              |
+/workspace/node_mo
+[tool] cmd: /bin/bash -lc "rg -n \"connections=.*pinheader|pinheader.*connections\" /workspace/node_modules/@tscircuit /workspace -g '"'!**/dist/**'"' | head -40"
+[tool] exit=0 output: 
+[assistant] (streaming...)
+[assistant] The breakout interface is settled: I’ll use explicit plated through-holes for each exposed pin instead of packaged headers, which keeps the design registry-free and avoids opaque header footprints. I’m finishing the remaining passive imports and then I’ll write the board in one edit.
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb "27pF capacitor 0402"'
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb "27ohm resistor 0402"'
+[tool] cmd: /bin/bash -lc 'tsci import --jlcpcb "5.1k resistor 0402"'
+[tool] exit=0 output: - Searching...
+- Importing "C1525" from JLCPCB...
+✔ Imported /workspace/imports/CL05B104KO5NNNC.tsx
+- Searching...
+- Importing "C141382" from JLCPCB...
+✔ Imported /workspace/imports/CT41G_0402_2X1_16V
+[tool] exit=0 output: - Searching...
+No results found for "27pF capacitor 0402" in the tscircuit registry or JLCPCB.
+
+[tool] exit=0 output: - Searching...
+No results found for "5.1k resistor 0402" in the tscircuit registry or JLCPCB.
+
+[tool] exit=0 output: - Searching...
+No results found for "27ohm resistor 0402" in the tscircuit registry or JLCPCB.
+
+[assistant] (streaming...)
+[assistant] The JLC search is inconsistent on generic values, but I have enough part imports to move forward. I’m identifying the actual filenames/value matches now and I’ll fill any remaining gaps with more targeted JLC queries.
+[tool] cmd: /bin/bash -lc 'ls -1 /workspace/imports'
+[tool] exit=0 output: AMS1117_3_3.tsx
+A_0402WGF1001TCE.tsx
+A_0402__1__10K.tsx
+CL05B104KO5NNNC.tsx
+CT41G_0402_2X1_16V_0_1uF_K_N_.tsx
+HX_USB3_1TYPE_C_16P_FS.tsx
+RP2040.tsx
+W25Q16JVUXIQ.tsx
+X322512MSB4SI.tsx
+XL_1608SYGC_06.ts
+[tool] cmd: /bin/bash -lc "sed -n '1,120p' /workspace/imports/A_0402WGF1001TCE.tsx && printf '\\n---\\n' && sed -n '1,120p' /workspace/imports/A_0402__1__10K.tsx && printf '\\n---\\n' && sed -n '1,120p' /workspace/imports/CL05B104KO5NNNC.tsx && printf '\\n---\\n' && sed -n '1,120p' /workspace/imports/CT41G_0402_2X1_16V_0_1uF_K_N_.tsx"
+[tool] exit=0 output: import type { ChipProps } from "@tscircuit/props"
+
+const pinLabels = {
+  pin1: ["pin1"],
+  pin2: ["pin2"]
+} as const
+
+export const A_0402WGF1001TCE = (props: ChipProps<typeof pinLabels>) => {
+  return
+[tool] cmd: /bin/bash -lc 'tsci search 5.1K resistor && tsci search 27R resistor && tsci search 27pF capacitor'
+[tool] exit=0 output: No results found for "5.1K resistor" in JLCPCB.
+No results found for "27R resistor" in JLCPCB.
+No results found for "27pF capacitor" in JLCPCB.
+
+[assistant] (streaming...)
+[assistant] I’m not going to block the board on JLC’s generic-value search quality. The active parts are imported from JLC, and I’ll use native primitive passives where the importer can’t reliably find exact 0402 values, which still satisfies the “no registry components” constraint.
+[tool] cmd: /bin/bash -lc "sed -n '1,180p' /workspace/imports/AMS1117_3_3.tsx"
+[tool] cmd: /bin/bash -lc "sed -n '1,220p' /workspace/tscircuit.config.json && printf '\\n---\\n' && sed -n '1,220p' /workspace/tsconfig.json"
+[tool] exit=0 output: {
+  "$schema": "https://cdn.jsdelivr.net/npm/@tscircuit/cli/types/tscircuit.config.schema.json"
+}
+---
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+ 
+[tool] exit=0 output: import type { ChipProps } from "@tscircuit/props"
+
+const pinLabels = {
+  pin1: ["pin1"],
+  pin2: ["pin2"],
+  pin3: ["VIN"],
+  pin4: ["TAB"]
+} as const
+
+export const AMS1117_3_3 = (props: ChipProps<typ
+[tool] cmd: /bin/bash -lc "rg -n \"net\\.|connectsTo=|schX=|pcbX=\" /workspace/node_modules/tscircuit /workspace -g '"'!**/dist/**'"' | head -80"
+[tool] exit=0 output: /workspace/imports/AMS1117_3_3.tsx:21:        <smtpad portHints={["pin1"]} pcbX="2.834893999999963mm" pcbY="-2.2999699999999166mm" width="2.4699975999999997mm" height="0.9800081999999999mm" shape="rec
+[assistant] (streaming...)
+[assistant] I’m about to edit `index.circuit.tsx`. Before that I’m checking one last implementation detail: whether the cleanest path is explicit `trace` elements everywhere or `connections` props on passives and holes to keep the netlist readable and routable.
+[tool] cmd: /bin/bash -lc "sed -n '1,220p' /workspace/node_modules/@tscircuit/props/lib/components/pin-header.ts"
+[tool] exit=0 output: import { distance } from "circuit-json"
+import {
+  type CommonComponentProps,
+  commonComponentProps,
+} from "lib/common/layout"
+import {
+  schematicPinArrangement,
+  type SchematicPinArrangement,
+} f
+[tool] cmd: /bin/bash -lc "rg -n \"type Connections|interface CommonComponentProps|connections\\?:\" /workspace/node_modules/@tscircuit/props /workspace/node_modules/tscircuit -g '"'!**/dist/**'"'"
+[tool] exit=0 output: /workspace/node_modules/@tscircuit/props/README.md:147:export interface CommonComponentProps extends CommonLayoutProps {
+/workspace/node_modules/@tscircuit/props/README.md:349:  connections?: Connecti
+[tool] cmd: /bin/bash -lc "rg -n \"connections=\\{\\{\" /workspace/node_modules /workspace -g '"'!**/dist/**'"' | head -60"
+[tool] exit=0 output: /workspace/node_modules/circuit-json-to-spice/README.md:40:      connections={{
+/workspace/node_modules/circuit-json-to-bpc/tests/example02.test.ts:16:      connections={{
+/workspace/node_modules/circ
+[tool] cmd: /bin/bash -lc "sed -n '1,160p' /workspace/node_modules/@tscircuit/props/lib/utility-types/connections-and-selectors.ts"
+[tool] cmd: /bin/bash -lc "sed -n '1,140p' /workspace/node_modules/@tscircuit/schematic-match-adapt/tests/tscircuit/tscircuit7.test.ts"
+[tool] exit=0 output: export type ConnectionTarget = string
+/**
+ * Defines a mapping of strings to connection paths e.g.
+ *
+ * const connections: Connections = {
+ *   GND: ".U1 > .GND",
+ *   VCC: ".U1 > .VCC",
+ * }
+ *
+ * C
+[tool] exit=0 output: import { test, expect } from "bun:test"
+import { testTscircuitCodeForLayout } from "./testTscircuitCodeForLayout"
+
+test("tscircuit7", async () => {
+  const tscircuitCode = `
+import { sel } from "tscir
+[assistant] (streaming...)
+[assistant] I’ve got enough context. I’m replacing the placeholder circuit with a complete minimal RP2040 breakout: JLC-imported RP2040, USB-C, flash, crystal, regulator, LED, native passives for the missing exact values, and plated-hole breakout pins without using `routingDisabled`.
+[assistant] (streaming...)
+[assistant] The board file is in place. I’m validating it now with typechecking and a tscircuit build so I can fix any selector, prop, or layout issues before handing it over.
+[tool] cmd: /bin/bash -lc 'npm run typecheck'
+[tool] cmd: /bin/bash -lc 'tsci check netlist index.circuit.tsx'
+[tool] cmd: /bin/bash -lc 'tsci build index.circuit.tsx'
+[tool] exit=2 output: index.circuit.tsx(318,9): error TS2322: Type '{ key: "GPIO0" | "GPIO1" | "GPIO2" | "GPIO3" | "GPIO4" | "GPIO5" | "GPIO6" | "GPIO7" | "GPIO8" | "GPIO9" | "GPIO10" | "GPIO11" | "GPIO12" | "GPIO13" | "GP
+[tool] exit=0 output: Errors: 0
+Warnings: 0
+
+Readable Netlist:
+COMPONENTS:
+ - USB1: HX_USB3_1TYPE_C_16P_FS
+ - U2: AMS1117_3_3
+ - CIN: 10uF capacitor
+ - COUT: 10uF capacitor
+ - U1: RP2040
+ - U3: W25Q16JVUXIQ
+ - Y1: X322512M
+[tool] exit=0 output: Building 1 file(s)...
+Building index.circuit.tsx...
+Generating circuit JSON...
+Async effect error in PcbTraceRender "capacity-mesh-autorouting":
+AutorouterError: Failed to solve 2 nodes, new-cmn_1-33,
+[assistant] (streaming...)
+[assistant] The electrical netlist is correct. The only issue so far is a TypeScript typing complaint about `key` on mapped `platedhole` elements, so I’m removing those React-only props and rerunning validation.
+[assistant] (streaming...)
+[assistant] The build exposed two real integration problems: name collisions between breakout holes and resistor/reference designators, and one remaining autorouter choke point. I’m fixing the naming first and then I’ll give the layout more margin to reduce the routing density.
+[tool] cmd: /bin/bash -lc "sed -n '1,260p' /workspace/index.circuit.tsx && printf '\\n---\\n' && sed -n '260,420p' /workspace/index.circuit.tsx"
+[tool] exit=0 output: import { AMS1117_3_3 } from "./imports/AMS1117_3_3"
+import { A_0402WGF1001TCE } from "./imports/A_0402WGF1001TCE"
+import { A_0402__1__10K } from "./imports/A_0402__1__10K"
+import { CL05B104KO5NNNC } f
+[assistant] (streaming...)
+[assistant] I’ve widened the board, pushed the power section away from the MCU, and removed the reference-name collisions. I’m rerunning typecheck and build now to see whether the remaining routing failure clears with the extra space.
+[tool] cmd: /bin/bash -lc 'npm run typecheck'
+[tool] cmd: /bin/bash -lc 'tsci build index.circuit.tsx'
+[tool] exit=0 output: 
+[tool] exit=0 output: Building 1 file(s)...
+Building index.circuit.tsx...
+Generating circuit JSON...
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `board`. It was passed a child from def
+[assistant] (streaming...)
+[assistant] The remaining errors are mostly self-inflicted density problems, not netlist mistakes. I’m simplifying the breakout to a genuinely minimal I/O set and re-spacing the support parts so the autorouter isn’t trying to solve a Pico-class fanout on a tiny board.
+[tool] cmd: /bin/bash -lc 'npm run typecheck'
+[tool] cmd: /bin/bash -lc 'tsci build index.circuit.tsx'
+[tool] exit=0 output: 
+[tool] exit=0 output: Building 1 file(s)...
+Building index.circuit.tsx...
+Generating circuit JSON...
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `board`. It was passed a child from def
+[assistant] (streaming...)
+[assistant] The design is now implemented and typechecks, but the current auto-routed PCB still has dense-placement/routing violations around the RP2040 support circuitry. I’m doing one quick pass to summarize what’s clean versus what still needs manual layout work so the handoff is accurate.
+[tool] cmd: /bin/bash -lc 'git diff -- /workspace/index.circuit.tsx'
+[tool] exit=129 output: warning: Not a git repository. Use --no-index to compare two paths outside a working tree
+usage: git diff --no-index [<options>] <path> <path>
+
+Diff output format options
+    -p, --patch           gen
+[tool] cmd: /bin/bash -lc 'tsci check netlist index.circuit.tsx'
+[tool] exit=0 output: Each child in a list should have a unique "key" prop.
+
+Check the render method of `board`. It was passed a child from default. See https://react.dev/link/warning-keys for more information.
+Errors: 0
+W
+[assistant] (streaming...)
+[assistant] Created the RP2040 breakout in [index.circuit.tsx](/workspace/index.circuit.tsx). It uses JLC-imported `RP2040`, USB-C, flash, crystal, regulator, and LED parts, with native passives for the values the JLC importer didn’t reliably resolve. I kept `routingDisabled` out.
+
+Validation status: `npm run typecheck` passes, and `tsci check netlist index.circuit.tsx` reports a clean netlist. `tsci build index.circuit.tsx` completes and writes output to `dist/`, but the PCB still has autorouter/clearance issues from dense placement around the RP2040 support circuitry and USB area. If you want, I can do a second pass focused just on manual placement cleanup and routing-friendly layout so it builds without those PCB errors.
+[system] turn completed | usage={}
+[system] completed | elapsed=667s
