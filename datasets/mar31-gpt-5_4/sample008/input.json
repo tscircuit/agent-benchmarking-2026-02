@@ -1,0 +1,6 @@
+{
+  "sample_number": 8,
+  "sample_name": "sample008",
+  "prompt": "create a minimal RP2040 breakout board with a usb port and LED, do not use components from the tscircuit registry, you can import jlcpcb components, do not use routingDisabled.\n\nBefore finishing, include a short section titled \"TSCircuit Developer Feedback\" with:\n- what was confusing or surprising in the tscircuit workflow\n- what wasted the most time\n- what docs, APIs, or tooling changes would have helped\n- any specific friction points encountered during this run",
+  "model": "gpt-5.4"
+}
