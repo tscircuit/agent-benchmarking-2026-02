@@ -1,0 +1,586 @@
+[warning] Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[system] turn started
+[assistant] I’ll use the tscircuit skill for this board so I can follow the project conventions and produce a buildable circuit rather than just sketching parts.
+[tool] read /root/.agents/skills/tscircuit/SKILL.md [completed] 0ms
+[assistant] I’m going to inspect the workspace first to see whether there is already a tscircuit project here, then I’ll build the RP2040 board in that shape and run the tscircuit checks.
+[tool] bash /bin/bash -lc ls [completed] 0ms
+[tool] bash /bin/bash -lc "rg --files -g '"'!*node_modules*'"' -g '"'!*.png'"' -g '"'!*.svg'"' | head -200" [completed] 0ms
+[tool] bash /bin/bash -lc "find /workspace -maxdepth 2 -name package.json -o -name 'tscircuit.config.*' -o -name '*.circuit.tsx'" [completed] 0ms
+[assistant] The workspace is empty, so I’ll scaffold a small tscircuit project locally and keep the implementation constrained to built-in primitives plus explicitly imported JLCPCB parts where needed.
+[tool] bash /bin/bash -lc 'node --version' [completed] 0ms
+[tool] output: v20.20.2
+[tool] bash /bin/bash -lc 'npm --version' [completed] 0ms
+[tool] output: 10.8.2
+[tool] bash /bin/bash -lc 'tsci --help' [completed] 1417ms
+[tool] output: Usage: tsci [options] [command]
+[tool] output: 
+[tool] output: CLI for developing tscircuit packages
+[tool] output: 
+[tool] output: Options:
+[tool] output:   -h, --help                   display help for command
+[tool] output: 
+[tool] output: Commands:
+[tool] output: ... 32 lines omitted ...
+[tool] output:                                import a component
+[tool] output:   convert [options] <file>     Convert a .kicad_mod footprint to a tscircuit
+[tool] output:                                component
+[tool] output:   simulate                     Run a simulation
+[tool] output:   version [options]            Print CLI version
+[tool] output:   help [command]               display help for command
+[assistant] The CLI is available, and initialization is running. Next I’ll inspect the generated files before choosing the component syntax, because tscircuit versions differ a bit in supported props.
+[assistant] The project files were created; the skill setup hit a GitHub rate limit but dependency install is continuing, which shouldn’t block the local board build.
+[tool] bash /bin/bash -lc 'tsci init .' [completed] 17179ms
+[tool] output: Created: index.circuit.tsx
+[tool] output: Created tscircuit.config.json with schema
+[tool] output: Created: .npmrc
+[tool] output: Generating package.json
+[tool] output: Created: package.json
+[tool] output: Created: tsconfig.json
+[tool] output: Created: .gitignore
+[tool] output: Setting up tscircuit AI skills...
+[tool] output: ... 21 lines omitted ...
+[tool] output:  - tscircuit
+[tool] output: 
+[tool] output: 294 packages installed [14.79s]
+[tool] output: Dependencies installed successfully.
+[tool] output: 
+[tool] output:  🎉 Initialization complete! Run  cd . && tsci dev  to start developing.
+[assistant] Initialization finished. I’m reading the starter code and package metadata now, then I’ll replace the sample circuit with the RP2040 breakout.
+[tool] read /workspace/index.circuit.tsx [completed] 0ms
+[tool] output: export default () => (
+[tool] output:   <board>
+[tool] output:     <resistor resistance="1k" footprint="0402" name="R1" />
+[tool] output:     <capacitor capacitance="1000pF" footprint="0402" name="C1" />
+[tool] output:     <trace from=".R1 > .pin1" to=".C1 > .pin1" />
+[tool] output:   </board>
+[tool] output: )
+[tool] read /workspace/package.json [completed] 0ms
+[tool] read /workspace/tscircuit.config.json [completed] 0ms
+[tool] bash /bin/bash -lc 'tsci import --help' [completed] 2146ms
+[tool] output: Usage: tsci import [options] <query...>
+[tool] output: 
+[tool] output: Search JLCPCB or the tscircuit registry and import a component
+[tool] output: 
+[tool] output: Arguments:
+[tool] output:   query        Chip name, part number, or package name
+[tool] output: 
+[tool] output: Options:
+[tool] output:   --jlcpcb     Search JLCPCB components
+[tool] output:   --lcsc       Alias for --jlcpcb
+[tool] output:   --tscircuit  Search tscircuit registry packages
+[tool] output:   --download   Download 3D model assets (.step, .obj) locally
+[tool] output:   -h, --help   display help for command
+[assistant] The starter project is minimal and only has tscircuit itself. I’m going to import the RP2040 from JLCPCB, while using tscircuit built-ins for generic passives/connectors/headers so no registry packages are added.
+[tool] bash /bin/bash -lc 'tsci import --jlcpcb RP2040' [completed] 2789ms
+[tool] output: - Searching...
+[tool] output: - Importing "C2040" from JLCPCB...
+[tool] output: ✔ Imported /workspace/imports/RP2040.tsx
+[assistant] The RP2040 import succeeded as a local `imports/RP2040.tsx` file from JLCPCB. I’ll inspect its exported component and pin names before wiring the board.
+[tool] read /workspace/imports/RP2040.tsx [completed] 0ms
+[tool] output: import type { ChipProps } from "@tscircuit/props"
+[tool] output: 
+[tool] output: const pinLabels = {
+[tool] output:   pin1: ["IOVDD6"],
+[tool] output:   pin2: ["GPIO0"],
+[tool] output: ... 151 lines omitted ...
+[tool] output:     />
+[tool] output:   )
+[tool] output: }
+[tool] bash /bin/bash -lc 'rg "interface|export|pinLabels|pin" imports/RP2040.tsx' [completed] 0ms
+[tool] output: const pinLabels = {
+[tool] output:   pin1: ["IOVDD6"],
+[tool] output:   pin2: ["GPIO0"],
+[tool] output:   pin3: ["GPIO1"],
+[tool] output:   pin4: ["GPIO2"],
+[tool] output:   pin5: ["GPIO3"],
+[tool] output:   pin6: ["GPIO4"],
+[tool] output:   pin7: ["GPIO5"],
+[tool] output: ... 103 lines omitted ...
+[tool] output: <smtpad portHints={["pin6"]} pcbX="-3.424936mm" pcbY="0.600075mm" width="0.850011mm" height="0.1999996mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin5"]} pcbX="-3.424936mm" pcbY="1.000125mm" width="0.850011mm" height="0.1999996mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin4"]} pcbX="-3.424936mm" pcbY="1.399921mm" width="0.850011mm" height="0.1999996mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin3"]} pcbX="-3.424936mm" pcbY="1.799971mm" width="0.850011mm" height="0.1999996mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin2"]} pcbX="-3.424936mm" pcbY="2.200021mm" width="0.850011mm" height="0.1999996mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin1"]} pcbX="-3.424936mm" pcbY="2.600071mm" width="0.850011mm" height="0.1999996mm" shape="rect" />
+[tool] bash /bin/bash -lc "find /workspace/node_modules -maxdepth 3 -path '*elements*connector*' -o -path '*elements*chip*' | head -50" [completed] 355ms
+[tool] read /root/.agents/skills/tscircuit/elements/connector.md [completed] 0ms
+[tool] read /root/.agents/skills/tscircuit/elements/board.md [completed] 0ms
+[tool] read /root/.agents/skills/tscircuit/elements/pinheader.md [completed] 0ms
+[tool] read /root/.agents/skills/tscircuit/SYNTAX.md [completed] 0ms
+[assistant] The local docs confirm the built-in USB-C connector syntax, which satisfies the no-registry constraint. I’m going to use a compact but real-ish minimal RP2040 wiring set: USB D+/D-, VBUS/VREG pins, decoupling, BOOTSEL/RUN controls, a status LED, SWD, and breakout headers.
+[tool] bash /bin/bash -lc 'tsci import --jlcpcb W25Q16JVSSIQ' [completed] 2157ms
+[tool] output: - Searching...
+[tool] output: - Importing "C131025" from JLCPCB...
+[tool] output: ✔ Imported /workspace/imports/W25Q16JVSSIQ.tsx
+[assistant] I’m adding a JLCPCB flash part as well, because a practical RP2040 breakout needs external QSPI flash even when the rest stays minimal.
+[assistant] The QSPI flash import also succeeded from JLCPCB. I’m checking the flash pin labels and then I’ll write the full board file.
+[tool] read /workspace/imports/W25Q16JVSSIQ.tsx [completed] 0ms
+[tool] output: import type { ChipProps } from "@tscircuit/props"
+[tool] output: 
+[tool] output: const pinLabels = {
+[tool] output:   pin1: ["pin1"],
+[tool] output:   pin2: ["pin2"],
+[tool] output: ... 40 lines omitted ...
+[tool] output:     />
+[tool] output:   )
+[tool] output: }
+[tool] read /root/.agents/skills/tscircuit/elements/crystal.md [completed] 0ms
+[tool] read /root/.agents/skills/tscircuit/elements/led.md [completed] 0ms
+[tool] read /root/.agents/skills/tscircuit/elements/pushbutton.md [completed] 0ms
+[assistant] Before editing I’m checking the built-in USB-C labels, because a wrong selector like `USBC.VBUS3` would fail late and waste iteration time.
+[tool] bash /bin/bash -lc "rg \"VBUS1|usb_c|USB-C|CC1\" node_modules/tscircuit node_modules/@tscircuit -g '*.js' -g '*.ts' -g '*.tsx' | head -100" [completed] 292ms
+[tool] output: h*b-_*P-d*E)*G,e[4]=(l*k-a*O-A*w)*G,e[5]=(o*O-r*k+s*w)*G,e[6]=(g*I-m*P-y*x)*G,e[7]=(u*P-h*I+d*x)*G,e[8]=(a*F-c*k+A*B)*G,e[9]=(i*k-o*F-s*B)*G,e[10]=(m*b-p*I+y*f)*G,e[11]=(...
+[tool] output: node_modules/@tscircuit/runframe/dist/standalone.min.js:  root.render(<App />);`),S.unstable_strictMode===!0&&(Q=!0),S.identifierPrefix!==void 0&&(U=S.identifierPrefix),S...
+[tool] output: node_modules/@tscircuit/runframe/dist/standalone.min.js:`),{solved:!1,connectionName:t.name}}createObstacleList({dominantLayer:t,connection:e,obstaclesFromTraces:n}){retu...
+[tool] output: node_modules/@tscircuit/props/lib/components/connector.ts:   * Connector standard, e.g. usb_c, m2
+[tool] output: node_modules/@tscircuit/props/lib/components/connector.ts:  standard?: "usb_c" | "m2"
+[tool] output: node_modules/@tscircuit/props/lib/components/connector.ts:  standard: z.enum(["usb_c", "m2"]).optional(),
+[tool] output: node_modules/@tscircuit/eval/dist/platform-config/getPlatformConfig.js:  standard: external_exports.enum(["usb_c", "m2"]).optional()
+[tool] output: node_modules/@tscircuit/eval/dist/platform-config/getPlatformConfig.js:    } else if (sourceComponent.type === "source_component" && sourceComponent.ftype === "simple_con...
+[tool] output: ... 19 lines omitted ...
+[tool] output: node_modules/@tscircuit/schematic-match-adapt/tests/tscircuit/tscircuit4.test.ts:test("tscircuit4 - USB-C with push button pin number error", async () => {
+[tool] output: node_modules/@tscircuit/schematic-match-adapt/tests/tscircuit/tscircuit4.test.ts:        VBUS1="net.VBUS"
+[tool] output: node_modules/@tscircuit/schematic-match-adapt/tests/pipeline/pipeline03.test.ts:        pin4: "CC1",
+[tool] output: node_modules/@tscircuit/schematic-match-adapt/tests/pipeline/pipeline03.test.ts:          pins: ["VBUS", "DP", "DM", "CC1", "CC2", "SHLD", "GND"],
+[tool] output: node_modules/@tscircuit/schematic-match-adapt/tests/pipeline/pipeline03.test.ts:        pin1: sel.J1.CC1,
+[tool] output: node_modules/@tscircuit/schematic-match-adapt/website/pages/pipeline/pipeline03.page.tsx:        pin4: "CC1",
+[tool] read /workspace/node_modules/@tscircuit/schematic-match-adapt/tests/tscircuit/tscircuit4.test.ts [completed] 0ms
+[assistant] I’m adding a 3.3 V regulator from JLCPCB rather than tying USB 5 V directly to RP2040 rails. That adds one part, but it makes the breakout electrically plausible instead of just drawable.
+[tool] bash /bin/bash -lc 'tsci import --jlcpcb XC6220B331MR' [completed] 3597ms
+[tool] output: - Searching...
+[tool] output: - Importing "C86534" from JLCPCB...
+[tool] output: ✔ Imported /workspace/imports/XC6220B331MR_G.tsx
+[assistant] The first regulator search is still resolving. If it picks a part cleanly I’ll use that; otherwise I’ll switch to a generic local SOT-23-5 regulator footprint with explicit pins.
+[assistant] The regulator import resolved to a local JLCPCB part. I’m checking its pins and then I’ll apply the circuit code.
+[tool] read /workspace/imports/XC6220B331MR_G.tsx [completed] 0ms
+[tool] output: import type { ChipProps } from "@tscircuit/props"
+[tool] output: 
+[tool] output: const pinLabels = {
+[tool] output:   pin1: ["VIN"],
+[tool] output:   pin2: ["VSS"],
+[tool] output: ... 39 lines omitted ...
+[tool] output:     />
+[tool] output:   )
+[tool] output: }
+[tool] bash /bin/bash -lc 'ls imports' [completed] 0ms
+[tool] output: RP2040.tsx
+[tool] output: W25Q16JVSSIQ.tsx
+[tool] output: XC6220B331MR_G.tsx
+[tool] bash /bin/bash -lc 'rg "pinLabels|pin[0-9]" imports/XC6220B331MR_G.tsx' [completed] 0ms
+[tool] output: const pinLabels = {
+[tool] output:   pin1: ["VIN"],
+[tool] output:   pin2: ["VSS"],
+[tool] output:   pin3: ["CE"],
+[tool] output:   pin4: ["NC"],
+[tool] output:   pin5: ["VOUT"]
+[tool] output: export const XC6220B331MR_G = (props: ChipProps<typeof pinLabels>) => {
+[tool] output:       pinLabels={pinLabels}
+[tool] output:         <smtpad portHints={["pin1"]} pcbX="-1.299972mm" pcbY="0.94996mm" width="0.8999982mm" height="0.499999mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin2"]} pcbX="-1.299972mm" pcbY="0mm" width="0.8999982mm" height="0.499999mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin3"]} pcbX="-1.299972mm" pcbY="-0.94996mm" width="0.8999982mm" height="0.499999mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin4"]} pcbX="1.299972mm" pcbY="-0.94996mm" width="0.8999982mm" height="0.499999mm" shape="rect" />
+[tool] output: <smtpad portHints={["pin5"]} pcbX="1.299972mm" pcbY="0.94996mm" width="0.8999982mm" height="0.499999mm" shape="rect" />
+[assistant] I’m going to replace the starter example with a compact two-layer board: USB-C at the left edge, regulator near VBUS, RP2040 centered, flash and crystal close to the MCU, status LED, SWD pins, and two 2.54 mm breakout headers.
+[assistant] The board file is in place. I’m starting with type checking and the tscircuit netlist check so selector/pin-name problems surface before routing.
+[tool] bash /bin/bash -lc 'npm run typecheck' [completed] 2685ms
+[tool] bash /bin/bash -lc 'tsci check netlist' [completed] 5230ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: trace: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pas...
+[tool] output: Dispatch phase complete. Created 7 sub-solvers.
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[tool] output: 
+[tool] output: Readable Netlist:
+[tool] output: COMPONENTS:
+[tool] output: ... 419 lines omitted ...
+[tool] output: 
+[tool] output: TP1
+[tool] output: - pin1: NETS(GND)
+[tool] output: 
+[tool] output: TP2
+[tool] output: - pin1: NETS(U1_RUN)
+[assistant] TypeScript and netlist passed. The netlist confirms the USB-C pin aliases, regulator rails, flash bus, LED, and headers are connected; I’m moving on to schematic and PCB placement checks.
+[assistant] The placement checks are running in parallel. If they report edge access or overlap issues, I’ll adjust the physical layout rather than disabling routing or checks.
+[tool] bash /bin/bash -lc 'tsci check schematic-placement' [completed] 3654ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: trace: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pas...
+[tool] output: Dispatch phase complete. Created 7 sub-solvers.
+[tool] output: <SchematicBoxPositions>
+[tool] output: <SchematicBoxPlacement componentName="USBC" positionAnchor="center" schX="-7" schY="3" width="1.7" height="3.2" />
+[tool] output: <SchematicBoxPlacement componentName="U2" positionAnchor="center" schX="-3" schY="3" width="1.2" height="0.8" />
+[tool] output: <SchematicBoxPlacement componentName="U1" positionAnchor="center" schX="1.5" schY="0" width="1.2" height="6" />
+[tool] output: <SchematicBoxPlacement componentName="U3" positionAnchor="center" schX="4.5" schY="3" width="1.2" height="1" />
+[tool] output: ... 99 lines omitted ...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box width" componentName="USBC" pinSide="bottom" edgeSide="...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U2" pinSide="right" edgeSide="to...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U2" pinSide="right" edgeSide="bo...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" edgeSide="to...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" edgeSide="bo...
+[tool] output: </SchematicPlacementIssues>
+[tool] bash /bin/bash -lc 'tsci check placement' [completed] 5076ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: trace: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pas...
+[tool] output: Dispatch phase complete. Created 7 sub-solvers.
+[tool] output: placement summary: 6 pad overlaps, 2 off-board, 5 courtyard collisions, 6 connector-body intrusions
+[tool] output: 
+[tool] output: worst issues:
+[tool] output: 1. J1 is 9.22mm outside left edge. Suggested move: move J1 9.22mm right to clear left edge.
+[tool] output: 2. J2 is 9.22mm outside right edge. Suggested move: move J2 9.22mm left to clear right edge.
+[tool] output: ... 175 lines omitted ...
+[tool] output: - pcb_courtyard_overlap_error: Courtyard of Y1 overlaps with courtyard of C7
+[tool] output: - pcb_courtyard_overlap_error: Courtyard of Y1 overlaps with courtyard of C8
+[tool] output: - pcb_courtyard_overlap_error: Courtyard of J1 overlaps with courtyard of USBC
+[tool] output: - pcb_courtyard_overlap_error: Courtyard of J2 overlaps with courtyard of C5
+[tool] output: - pcb_courtyard_overlap_error: Courtyard of R2 overlaps with courtyard of USBC
+[tool] output: - pcb_courtyard_overlap_error: Courtyard of R3 overlaps with courtyard of USBC
+[assistant] Placement found real mechanical problems: the headers defaulted to horizontal rows through the middle of the board and extended off-board. I’m going to enlarge the board slightly, move the headers to the top and bottom edges, pull decouplers off the RP2040 courtyard, and fix the BOOTSEL pad so it is a short-to-ground pad rather than a permanent pull-down.
+[assistant] The layout edits are applied, including removing the accidental BOOTSEL-to-ground resistor path. I’m rerunning the same checks now to catch the next set of issues.
+[tool] bash /bin/bash -lc 'npm run typecheck' [completed attempt=2] 3592ms
+[assistant] The checks are underway. The main thing I’m watching for now is whether the wider board solved header/body collisions and whether the schematic still reports actionable overlap issues.
+[tool] bash /bin/bash -lc 'tsci check schematic-placement' [completed attempt=2] 5793ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: trace: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you ...
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: <SchematicBoxPositions>
+[tool] output: ... 65 lines omitted ...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U2" pinSide="right" ed...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" ed...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" ed...
+[tool] output: </SchematicPlacementIssues>
+[tool] bash /bin/bash -lc 'tsci check placement' [completed attempt=2] 7109ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: trace: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you ...
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: placement summary: no placement issues
+[tool] output: ... 31 lines omitted ...
+[tool] output: 
+[tool] output: placement drc:
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[assistant] Schematic overlaps are gone. The remaining schematic output is mostly style guidance about symbol widths and capacitor orientation; I’ll check the PCB placement result before deciding whether those need code-level tuning.
+[assistant] PCB placement is clean now. I’m removing the explicit React `key` props from generated trace elements to get rid of the noisy tscircuit warning, then I’ll build and run routing checks.
+[assistant] With that warning source removed, I’m running the final validation pass: netlist, placement, routing difficulty, trace length, and full build.
+[tool] bash /bin/bash -lc 'tsci check trace-length' [failed exit=1] 1723ms
+[tool] output: error: missing required argument 'pinOrNetRef'
+[assistant] The validation commands are still running. I’ll wait for the build and routing reports rather than assuming the autorouter is happy.
+[tool] bash /bin/bash -lc 'tsci check netlist' [completed attempt=2] 11743ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Each child in a list should have a unique "key" prop.
+[tool] output: 
+[tool] output: Check the render method of `board`. It was passed a child from default. See https://react.dev/link/warning-keys for more information.
+[tool] output: ... 420 lines omitted ...
+[tool] output: - pin1: NETS(U1_QSPI_SS)
+[tool] output: 
+[tool] output: RUN
+[tool] output: - pin1: NETS(U1_RUN)
+[tool] bash /bin/bash -lc 'tsci check placement' [completed attempt=3] 15061ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Each child in a list should have a unique "key" prop.
+[tool] output: 
+[tool] output: Check the render method of `board`. It was passed a child from default. See https://react.dev/link/warning-keys for more information.
+[tool] output: ... 33 lines omitted ...
+[tool] output: 
+[tool] output: placement drc:
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[assistant] Netlist and PCB placement are clean. There is only a React list-key warning from generated JSX traces, which I’ll eliminate by expanding the GPIO traces explicitly after I collect the routing results.
+[tool] bash /bin/bash -lc 'tsci build' [completed] 52641ms
+[tool] output: Building 1 file(s)...
+[tool] output: Building index.circuit.tsx...
+[tool] output: Generating circuit JSON...
+[tool] output: Each child in a list should have a unique "key" prop.
+[tool] output: 
+[tool] output: Check the render method of `board`. It was passed a child from default. See https://react.dev/link/warning-keys for more information.
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: (source_port_id: source_port_120) for trace source_trace_60 does not have x/y coordinates. Skipping this trace.
+[tool] output: ... 122 lines omitted ...
+[tool] output: Build complete
+[tool] output:   Circuits  1 passed
+[tool] output:   Output    dist
+[tool] output: 
+[tool] output: ⚠ Build completed with errors
+[tool] output: Build exiting with code 0: build finished successfully
+[assistant] The full build emitted circuit JSON, but it surfaced two concrete problems I should fix: the `testpoint` footprint string is invalid, and the generated GPIO trace array still creates a React key warning. The rest is mostly autorouter/clearance DRC around the dense flash footprint, which I’ll try to reduce by moving flash farther from the MCU and expanding the GPIO traces explicitly.
+[tool] read /root/.agents/skills/tscircuit/elements/testpoint.md [completed] 0ms
+[tool] bash /bin/bash -lc 'tsci check routing-difficulty --help' [completed] 2802ms
+[tool] output: Usage: tsci check routing-difficulty [options] [file]
+[tool] output: 
+[tool] output: Analyze routing difficulty
+[tool] output: 
+[tool] output: Arguments:
+[tool] output:   file        Path to the entry file
+[tool] output: 
+[tool] output: Options:
+[tool] output:   -h, --help  display help for command
+[tool] bash /bin/bash -lc 'tsci check trace-length --help' [completed] 2792ms
+[tool] output: Usage: tsci check trace-length [options] <pinOrNetRef> [file]
+[tool] output: 
+[tool] output: Analyze trace length for a pin or net
+[tool] output: 
+[tool] output: Arguments:
+[tool] output:   pinOrNetRef  Pin or net target to analyze
+[tool] output:   file         Path to the entry file
+[tool] output: 
+[tool] output: Options:
+[tool] output:   -h, --help   display help for command
+[assistant] I found the documented testpoint API: it uses `footprintVariant` and pad shape/diameter props, not `footprint="testpoint"`. I’m applying that and expanding the mapped GPIO traces into explicit JSX so validation output is cleaner.
+[assistant] The trace-length command requires a specific net or pin, so I’ll use it on `net.USB_DP` and `net.USB_DM` rather than treating it as a whole-board check.
+[assistant] The first routing-difficulty run is taking too long after the earlier noisy state, so I’m stopping that process and rerunning it after the cleanup patch.
+[assistant] The session’s stdin closed, so I’ll treat that run as abandoned and start a fresh validation set from the current file.
+[assistant] The fresh checks are running from the corrected file. I’m looking for a clean netlist and zero PCB placement errors first.
+[tool] bash /bin/bash -lc 'npm run typecheck' [completed attempt=3] 5595ms
+[tool] bash /bin/bash -lc 'tsci check schematic-placement' [completed attempt=3] 7857ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: <SchematicBoxPositions>
+[tool] output: <SchematicBoxPlacement componentName="USBC" positionAnchor="center" schX="-7" schY="3" width="1.7" height="3.2" />
+[tool] output: ... 64 lines omitted ...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U2" pinSide="right" ed...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" ed...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" ed...
+[tool] output: </SchematicPlacementIssues>
+[tool] bash /bin/bash -lc 'tsci check netlist' [completed attempt=3] 7954ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[tool] output: ... 417 lines omitted ...
+[tool] output: - pin1: NETS(U1_QSPI_SS)
+[tool] output: 
+[tool] output: RUN
+[tool] output: - pin1: NETS(U1_RUN)
+[tool] bash /bin/bash -lc 'tsci check placement' [completed attempt=4] 9165ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: placement summary: no placement issues
+[tool] output: 
+[tool] output: ... 30 lines omitted ...
+[tool] output: 
+[tool] output: placement drc:
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[tool] bash /bin/bash -lc 'rg "schWidth|schHeight" node_modules/@tscircuit/props/lib -n | head -30' [completed] 0ms
+[tool] output: node_modules/@tscircuit/props/lib/components/jumper.ts:33:  schWidth?: number | string
+[tool] output: node_modules/@tscircuit/props/lib/components/jumper.ts:34:  schHeight?: number | string
+[tool] output: node_modules/@tscircuit/props/lib/components/jumper.ts:70:  schWidth: distance.optional(),
+[tool] output: node_modules/@tscircuit/props/lib/components/jumper.ts:71:  schHeight: distance.optional(),
+[tool] output: node_modules/@tscircuit/props/lib/components/group.ts:208:  schWidth?: Distance
+[tool] output: node_modules/@tscircuit/props/lib/components/group.ts:209:  schHeight?: Distance
+[tool] output: node_modules/@tscircuit/props/lib/components/group.ts:598:  schWidth: length.optional(),
+[tool] output: node_modules/@tscircuit/props/lib/components/group.ts:599:  schHeight: length.optional(),
+[tool] output: ... 2 lines omitted ...
+[tool] output: node_modules/@tscircuit/props/lib/components/pin-header.ts:149:  schWidth: distance.optional(),
+[tool] output: node_modules/@tscircuit/props/lib/components/pin-header.ts:150:  schHeight: distance.optional(),
+[tool] output: node_modules/@tscircuit/props/lib/components/chip.ts:63:  schWidth?: Distance
+[tool] output: node_modules/@tscircuit/props/lib/components/chip.ts:64:  schHeight?: Distance
+[tool] output: node_modules/@tscircuit/props/lib/components/chip.ts:170:  schWidth: distance.optional(),
+[tool] output: node_modules/@tscircuit/props/lib/components/chip.ts:171:  schHeight: distance.optional(),
+[tool] bash /bin/bash -lc 'rg "schWidth|schHeight" node_modules/@tscircuit/props/lib/components/connector.ts node_modules/@tscircuit/props/lib/components/capacitor.ts -n' [failed exit=1] 0ms
+[assistant] The schematic checker still reports style-level symbol suggestions but no component overlaps. I’m leaving those because the connector and capacitor built-ins don’t expose all the suggested geometry knobs consistently; the PCB placement check remains the manufacturability gate here.
+[assistant] Core checks now pass: typecheck, netlist, and PCB placement. I’m running a final build and targeted USB trace-length checks; I’ll also try routing-difficulty again with a shorter wait so it doesn’t stall the turn.
+[assistant] The final commands are running. The build may still report autorouter DRC issues around the imported SOIC flash; if so I’ll distinguish those from compile/netlist/placement success in the final result.
+[assistant] These analysis commands are spending time in routing-related solvers after dispatch. I’m giving them a little longer, then I’ll stop any that exceed the bounded timeout.
+[tool] bash /bin/bash -lc 'tsci check trace-length net.USB_DM' [completed] 86540ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: <TraceLengthAnalysis requestedTarget="net.USB_DM" resolvedTarget="net.USB_DM" targetKind="net" traceCount="3" totalLengthMm="73.06" totalStraightLineDistanceMm="32.01">
+[tool] output:   <Trace id="source_trace_42:source_port_50" label="U1.USB_DM -&gt; net.USB_DM" connectionType="via net" lengthMm="15.99" straightLineDistanceMm="15.99">
+[tool] output:     <ConnectedPins>
+[tool] output:       <Pin ref="U1.USB_DM" />
+[tool] output:       <Pin ref="USBC.pin21" />
+[tool] output:       <Pin ref="USBC.pin23" />
+[tool] output: ... 72 lines omitted ...
+[tool] output:       <Point x="-22.87" y="0.76" layer="top" kind="track" />
+[tool] output:       <Point x="-22.38" y="0.76" layer="top" kind="track" />
+[tool] output:       <Point x="-22.38" y="0.75" layer="top" kind="endpoint" />
+[tool] output:     </Path>
+[tool] output:   </Trace>
+[tool] output: </TraceLengthAnalysis>
+[tool] bash /bin/bash -lc 'tsci build' [completed attempt=2] 87219ms
+[tool] output: Building 1 file(s)...
+[tool] output: Building index.circuit.tsx...
+[tool] output: Generating circuit JSON...
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: ... 116 lines omitted ...
+[tool] output:   Output    dist
+[tool] output: 
+[tool] output: ⚠ Build completed with errors
+[tool] output: Build exiting with code 0: build finished successfully
+[tool] bash /bin/bash -lc 'tsci check trace-length net.USB_DP' [completed] 87285ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: <TraceLengthAnalysis requestedTarget="net.USB_DP" resolvedTarget="net.USB_DP" targetKind="net" traceCount="3" totalLengthMm="69.11" totalStraightLineDistanceMm="31.58">
+[tool] output:   <Trace id="source_trace_41:source_port_51" label="U1.USB_DP -&gt; net.USB_DP" connectionType="via net" lengthMm="15.77" straightLineDistanceMm="15.77">
+[tool] output:     <ConnectedPins>
+[tool] output:       <Pin ref="U1.USB_DP" />
+[tool] output:       <Pin ref="USBC.pin22" />
+[tool] output:       <Pin ref="USBC.pin24" />
+[tool] output: ... 74 lines omitted ...
+[tool] output:     <TraceRequirements none />
+[tool] output:     <Path>
+[tool] output:       <Point x="-22.37" y="-0.75" layer="top" kind="endpoint" />
+[tool] output:     </Path>
+[tool] output:   </Trace>
+[tool] output: </TraceLengthAnalysis>
+[assistant] Routing-difficulty and trace-length are still not returning promptly. I’m going to let the full build finish if it can, but I won’t hide that those checks stalled.
+[tool] bash /bin/bash -lc "ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s'" [completed] 0ms
+[tool] output: root      4446  3651 99 18:48 ?        00:04:37 bun /usr/bin/tsci check routing-difficulty
+[tool] output: root      4915  3651  0 18:51 ?        00:00:00 timeout 30s tsci check routing-difficulty
+[tool] output: root      4918  4915 99 18:51 ?        00:02:09 bun /usr/bin/tsci check routing-difficulty
+[tool] output: root      5091  3651  0 18:53 ?        00:00:00 /bin/bash -c ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s'
+[tool] output: root      5093  5091  0 18:53 ?        00:00:00 rg tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s
+[assistant] I found two routing-difficulty processes still consuming CPU, including the earlier abandoned one. I’m killing those solver processes so the workspace isn’t left with runaway commands.
+[tool] bash /bin/bash -lc 'kill 4446 4915 4918' [completed] 0ms
+[assistant] Those solver processes are stopped. I’m checking for any remaining build or trace-length processes before wrapping up.
+[tool] bash /bin/bash -lc "ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s'" [completed attempt=2] 0ms
+[tool] output: root      4446  3651 99 18:48 ?        00:04:46 bun /usr/bin/tsci check routing-difficulty
+[tool] output: root      4915  3651  0 18:51 ?        00:00:00 timeout 30s tsci check routing-difficulty
+[tool] output: root      4918  4915 99 18:51 ?        00:02:18 bun /usr/bin/tsci check routing-difficulty
+[tool] output: root      5099  3651  0 18:53 ?        00:00:00 /bin/bash -c ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s'
+[tool] output: root      5101  5099  0 18:53 ?        00:00:00 rg tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s
+[tool] bash /bin/bash -lc 'kill -9 4446 4915 4918' [completed] 0ms
+[tool] bash /bin/bash -lc 'timeout 30s tsci check routing-difficulty' [failed exit=-1] 139310ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] bash /bin/bash -lc 'tsci check routing-difficulty' [failed exit=-1] 286931ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Each child in a list should have a unique "key" prop.
+[tool] output: 
+[tool] output: Check the render method of `board`. It was passed a child from default. See https://react.dev/link/warning-keys for more information.
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: (source_port_id: source_port_120) for trace source_trace_60 does not have x/y coordinates. Skipping this trace.
+[tool] output: (source_port_id: source_port_121) for trace source_trace_61 does not have x/y coordinates. Skipping this trace.
+[assistant] The normal kill didn’t clear them, so I used `kill -9` on the stuck tscircuit routing processes. This is only stopping runaway analysis commands, not modifying files.
+[tool] bash /bin/bash -lc "ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s'" [completed attempt=3] 0ms
+[tool] output: root      5111  3651  0 18:53 ?        00:00:00 /bin/bash -c ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s'
+[tool] output: root      5113  5111  0 18:53 ?        00:00:00 rg tsci check routing-difficulty|tsci check trace-length|tsci build|timeout 30s
+[assistant] The build completed and wrote `dist/index/circuit.json`; it exits successfully but still reports autorouter/DRC problems around the imported flash footprint and several generated PCB traces. I’m checking whether the USB trace-length sessions returned or need cleanup.
+[assistant] The USB trace-length checks returned, but the autoroutes are poor: `USB_DP` total length is about 69 mm and `USB_DM` about 73 mm because the solver routed through shared net connection points. I’m going to remove the problematic imported flash footprint from the active circuit and model the flash as a local generic SOIC-8 chip, which should reduce the flash DRC noise without using registry components.
+[assistant] The active flash is now a local generic SOIC-8 chip with explicit W25Q pin labels, so it still represents the required QSPI flash without depending on the tscircuit registry or the problematic imported flash footprint. I’m rerunning the key checks.
+[tool] bash /bin/bash -lc 'npm run typecheck' [completed attempt=4] 2892ms
+[assistant] The checks are running again. If the generic SOIC footprint is accepted, the build output should have fewer footprint-clearance errors around `U3`.
+[tool] bash /bin/bash -lc 'tsci check netlist' [completed attempt=4] 5565ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[tool] output: ... 417 lines omitted ...
+[tool] output: - pin1: NETS(U1_QSPI_SS)
+[tool] output: 
+[tool] output: RUN
+[tool] output: - pin1: NETS(U1_RUN)
+[tool] bash /bin/bash -lc 'tsci check placement' [completed attempt=5] 6729ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: placement summary: no placement issues
+[tool] output: 
+[tool] output: ... 30 lines omitted ...
+[tool] output: 
+[tool] output: placement drc:
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[assistant] TypeScript passes after the flash change. I’m waiting on netlist, placement, and the full build now.
+[assistant] Netlist and PCB placement are clean with the generic flash footprint. The build is still running through routing/DRC.
+[tool] bash /bin/bash -lc 'tsci build' [completed attempt=3] 18100ms
+[tool] output: Building 1 file(s)...
+[tool] output: Building index.circuit.tsx...
+[tool] output: Generating circuit JSON...
+[tool] output: Dispatch phase complete. Created 11 sub-solvers.
+[tool] output: ... 71 lines omitted ...
+[tool] output:   Output    dist
+[tool] output: 
+[tool] output: ⚠ Build completed with errors
+[tool] output: Build exiting with code 0: build finished successfully
+[assistant] The autorouter still fails one node, mainly because the 24-pin breakout creates a dense routing problem on a small two-layer board. To keep the board minimal and buildable without `routingDisabled`, I’m reducing the breakout to two 8-pin headers: six GPIO plus power/ground on one side, four GPIO plus SWD/RUN/ground on the other.
+[assistant] The header reduction is applied. I’m rerunning typecheck, netlist, placement, and build to see whether the autorouter can complete now.
+[assistant] The validation pass is running. The reduced pin count should give the solver materially more room.
+[tool] bash /bin/bash -lc 'npm run typecheck' [completed attempt=5] 5169ms
+[assistant] TypeScript still passes. Waiting on tscircuit checks and build.
+[tool] bash /bin/bash -lc 'tsci check netlist' [completed attempt=5] 7981ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 12 sub-solvers.
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[tool] output: ... 371 lines omitted ...
+[tool] output: - pin1: NETS(U1_QSPI_SS)
+[tool] output: 
+[tool] output: RUN
+[tool] output: - pin1: NETS(U1_RUN)
+[tool] bash /bin/bash -lc 'tsci check placement' [completed attempt=6] 9668ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 12 sub-solvers.
+[tool] output: placement summary: no placement issues
+[tool] output: 
+[tool] output: ... 30 lines omitted ...
+[tool] output: 
+[tool] output: placement drc:
+[tool] output: Errors: 0
+[tool] output: Warnings: 0
+[tool] bash /bin/bash -lc 'tsci build' [completed attempt=4] 14436ms
+[tool] output: Building 1 file(s)...
+[tool] output: Building index.circuit.tsx...
+[tool] output: Generating circuit JSON...
+[tool] output: Dispatch phase complete. Created 12 sub-solvers.
+[tool] output: ... 65 lines omitted ...
+[tool] output:   Output    dist
+[tool] output: 
+[tool] output: ✓ Done
+[tool] output: Build exiting with code 0: build finished successfully
+[assistant] Netlist and placement are clean after reducing the breakout headers. The build is the remaining check.
+[assistant] The full build now completes successfully. It still prints non-fatal metadata warnings from tscircuit’s parts matching and pin-attribute checks, but the autorouter failure is gone. I’ll rerun schematic placement once more after the header reduction.
+[tool] bash /bin/bash -lc 'tsci check schematic-placement' [completed attempt=4] 5029ms
+[tool] output: Detected entrypoint: 'index.circuit.tsx'
+[tool] output: Dispatch phase complete. Created 12 sub-solvers.
+[tool] output: <SchematicBoxPositions>
+[tool] output: <SchematicBoxPlacement componentName="USBC" positionAnchor="center" schX="-7" schY="3" width="1.7" height="3.2" />
+[tool] output: ... 55 lines omitted ...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U2" pinSide="right" ed...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" ed...
+[tool] output: <SchematicPinPaddingToEdgeTooLarge message="Move schematic pins closer to the box edge or change the schematic box height" componentName="U1" pinSide="right" ed...
+[tool] output: </SchematicPlacementIssues>
+[assistant] Schematic placement has no overlaps; the remaining output is symbol styling suggestions. I’ll do one process check and a quick file summary before the final response.
+[tool] bash /bin/bash -lc "ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|tsci check'" [completed] 0ms
+[tool] output: root      5474  3651  0 18:55 ?        00:00:00 /bin/bash -c ps -ef | rg 'tsci check routing-difficulty|tsci check trace-length|tsci build|tsci check'
+[tool] output: root      5476  5474  0 18:55 ?        00:00:00 rg tsci check routing-difficulty|tsci check trace-length|tsci build|tsci check
+[tool] bash /bin/bash -lc 'git status --short' [failed exit=128] 0ms
+[tool] output: fatal: not a git repository (or any parent up to mount point /)
+[tool] output: Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[tool] bash /bin/bash -lc 'find /workspace -maxdepth 2 -type f | sort' [completed] 0ms
+[tool] output: /workspace/.gitignore
+[tool] output: /workspace/.npmrc
+[tool] output: /workspace/bun.lock
+[tool] output: /workspace/imports/RP2040.tsx
+[tool] output: /workspace/imports/W25Q16JVSSIQ.tsx
+[tool] output: /workspace/imports/XC6220B331MR_G.tsx
+[tool] output: /workspace/index.circuit.tsx
+[tool] output: /workspace/package.json
+[tool] output: /workspace/tscircuit.config.json
+[tool] output: /workspace/tsconfig.json
+[assistant] There are no lingering tscircuit processes. I noticed the earlier JLCPCB flash import is no longer used after switching to the generic SOIC-8 flash model, so I’ll remove that unused file before finalizing.
+[assistant] The unused flash import file is removed. I’m doing a final quick typecheck to make sure the active circuit still references only existing files.
+[tool] bash /bin/bash -lc 'npm run typecheck' [completed attempt=6] 3702ms
+[assistant] Implemented a minimal RP2040 USB breakout in [index.circuit.tsx](/workspace/index.circuit.tsx). It includes:
+
+- JLCPCB-imported RP2040 and 3.3 V regulator
+- Built-in USB-C connector, no registry components
+- RP2040 support parts: QSPI flash model, 12 MHz crystal, decoupling, CC resistors
+- Green status LED on GPIO25
+- BOOT and RUN pads
+- Two 8-pin breakout headers with GPIO, SWD, RUN, 3V3, and GND
+- No `routingDisabled`
+
+Validation run:
+
+- `npm run typecheck`: passed
+- `tsci check netlist`: 0 errors, 0 warnings
+- `tsci check placement`: 0 errors, 0 warnings
+- `tsci check schematic-placement`: no overlaps; remaining output is schematic style suggestions
+- `tsci build`: completed successfully and wrote `dist/index/circuit.json`; it still prints non-fatal tscircuit metadata warnings about USB-C manufacturer part number, generic pin attributes, and inferred supplier footprint matching for built-in passives
+
+**TSCircuit Developer Feedback**
+- Confusing/surprising: `tsci build` exits successfully while printing many scary “missing trace” and metadata warnings; it is hard to tell which are fatal versus advisory.
+- Most time wasted: autorouter behavior around a dense imported JLCPCB flash footprint and a too-large breakout header set.
+- Helpful changes: clearer severity labels in build output, better default USB-C manufacturer-part handling, and docs showing valid `testpoint` footprint props.
+- Specific friction: `tsci check trace-length` requires a net argument, `routing-difficulty` stalled until manually killed, and React `key` behavior on generated JSX traces produced misleading warnings.
+[system] turn completed | usage={}
+[system] completed | elapsed=738s
