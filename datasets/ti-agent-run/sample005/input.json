@@ -1,0 +1,6 @@
+{
+  "sample_number": 5,
+  "sample_name": "sample005",
+  "prompt": "create a RP2040 board, do not use components from the tscircuit registry, you can import jlcpcb components, use routingDisabled. this will only be a schematic agentrun test.\n\nBefore finishing, include a short section titled \"TSCircuit Developer Feedback\" with:\n- what was confusing or surprising in the tscircuit workflow\n- what wasted the most time\n- what docs, APIs, or tooling changes would have helped\n- any specific friction points encountered during this run",
+  "model": "gpt-5.5"
+}
