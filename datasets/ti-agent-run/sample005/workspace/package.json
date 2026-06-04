@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check:schematic": "tsci check schematic-placement",
+    "build": "tsci build"
+  },
+  "dependencies": {
+    "@tscircuit/cli": "^0.1.1449",
+    "@types/react": "^19.1.8",
+    "react": "^19.1.0",
+    "tscircuit": "^0.0.1825",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {}
+}

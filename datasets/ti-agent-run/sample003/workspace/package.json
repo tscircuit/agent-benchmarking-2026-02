@@ -1,0 +1,19 @@
+{
+  "name": "rp2040-schematic-agentrun",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsci build RP2040Board.circuit.tsx",
+    "snapshot": "tsci snapshot RP2040Board.circuit.tsx",
+    "check:schematic": "tsci check schematic-placement RP2040Board.circuit.tsx"
+  },
+  "dependencies": {
+    "tscircuit": "^0.0.1825"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "typescript": "^5.8.3"
+  }
+}
