@@ -1,0 +1,10 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/npm/@tscircuit/cli/types/tscircuit.config.schema.json",
+  "mainEntrypoint": "ring-light-pd-lm3409.circuit.tsx",
+  "includeBoardFiles": ["ring-light-pd-lm3409.circuit.tsx"],
+  "build": {
+    "routingDisabled": true,
+    "circuitJson": true,
+    "previewImages": true
+  }
+}
