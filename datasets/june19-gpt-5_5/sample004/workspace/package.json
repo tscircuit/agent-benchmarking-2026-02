@@ -1,0 +1,19 @@
+{
+  "name": "usb-c-pd-ring-light-schematic",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check:schematic": "tsci check schematic-placement",
+    "build": "tsci build --schematic-only --routing-disabled --disable-parts-engine --ignore-netlist-drc --ignore-pin-specification-drc",
+    "snapshot": "tsci snapshot"
+  },
+  "dependencies": {
+    "@tscircuit/cli": "^0.1.1520",
+    "@tscircuit/core": "^0.0.1342",
+    "tscircuit": "^0.0.1907",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {}
+}

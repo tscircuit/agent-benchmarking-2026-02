@@ -1,0 +1,6 @@
+{
+  "sample_number": 4,
+  "sample_name": "sample004",
+  "prompt": "Photography ring light with USB-C PD input using an ST STUSB4500 plus a TI LM3409 driver for flicker-free dimming across video frame rates. Do not use components from the tscircuit registry, you can import jlcpcb components, use routingDisabled. This will only be a schematic agentrun test.\n\nBefore finishing, include a short section titled \"TSCircuit Developer Feedback\" with:\n- what was confusing or surprising in the tscircuit workflow\n- what wasted the most time\n- what docs, APIs, or tooling changes would have helped\n- any specific friction points encountered during this run",
+  "model": "gpt-5.5"
+}
